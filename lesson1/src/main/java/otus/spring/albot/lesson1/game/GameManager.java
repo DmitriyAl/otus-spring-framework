@@ -53,7 +53,6 @@ public class GameManager {
                     handled = handleAnswer(question, answer);
                 } while (!handled);
             } catch (QuestionTypeIsNotSupportedException e) {
-                System.out.println("oooooooooooooooooooops");
                 questions.remove(i--);
             }
         }
