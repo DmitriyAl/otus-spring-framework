@@ -10,6 +10,7 @@ import otus.spring.albot.lesson1.model.QuestionType;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,28 +18,36 @@ import java.util.List;
  * @author Dmitrii Albot
  */
 public class QuizParser {
-    private String fileName = "/quiz.csv";
-    private static final Logger log = Logger.getLogger(QuizParser.class);
+    private String fileName;
+    private static final Logger LOG = Logger.getLogger(QuizParser.class);
+
+    public QuizParser(String fileName) {
+        this.fileName = fileName;
+    }
 
     public List<ParsedLine> parse() {
         List<CSVRecord> records = getRecords();
         List<ParsedLine> lines = new LinkedList<>();
         for (CSVRecord record : records) {
-            QuestionType type = QuestionType.valueOf(record.get(0));
-            String question = record.get(1);
-            String answer = record.get(2);
-            int size = record.size();
-            ParsedLine line;
-            if (size > 3) {
-                List<String> choices = new LinkedList<>();
-                for (int i = 3; i < size; i++) {
-                    choices.add(record.get(i));
+            try {
+                QuestionType type = QuestionType.valueOf(record.get(0));
+                String question = record.get(1);
+                String answer = record.get(2);
+                int size = record.size();
+                ParsedLine line;
+                if (size > 3) {
+                    List<String> choices = new LinkedList<>();
+                    for (int i = 3; i < size; i++) {
+                        choices.add(record.get(i));
+                    }
+                    line = new ParsedLine(type, question, answer, choices);
+                } else {
+                    line = new ParsedLine(type, question, answer);
                 }
-                line = new ParsedLine(type, question, answer, choices);
-            } else {
-                line = new ParsedLine(type, question, answer);
+                lines.add(line);
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                LOG.trace("Invalid CSV line with number " + record.getRecordNumber());
             }
-            lines.add(line);
         }
         return lines;
     }
@@ -49,7 +58,7 @@ public class QuizParser {
             CSVParser parser = CSVFormat.DEFAULT.parse(new InputStreamReader(Main.class.getResourceAsStream(fileName)));
             records = parser.getRecords();
         } catch (IOException e) {
-            log.error("Problems with csv parser");
+            LOG.error("Problems with csv parser");
         }
         return records;
     }

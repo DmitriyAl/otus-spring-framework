@@ -1,7 +1,6 @@
 package otus.spring.albot.lesson1.model;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Dmitrii Albot

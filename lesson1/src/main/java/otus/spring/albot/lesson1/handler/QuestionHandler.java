@@ -1,5 +1,6 @@
 package otus.spring.albot.lesson1.handler;
 
+import otus.spring.albot.lesson1.exception.IncorrectAnswerException;
 import otus.spring.albot.lesson1.model.ParsedLine;
 
 /**
@@ -18,7 +19,7 @@ public abstract class QuestionHandler {
 
     protected abstract void addExtraPartForQuestion(ParsedLine question, StringBuilder sb);
 
-    public boolean handleQuestion(ParsedLine question, String answer) {
+    public boolean handleQuestion(ParsedLine question, String answer) throws IncorrectAnswerException {
         if (question.getAnswer().toLowerCase().equals(answer.toLowerCase())) {
             return true;
         }

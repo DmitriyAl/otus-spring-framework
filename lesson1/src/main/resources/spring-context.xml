@@ -7,7 +7,9 @@
     <bean id="gameManager" class="otus.spring.albot.lesson1.game.GameManager">
         <constructor-arg name="factory" ref="questionHandlerFactory"/>
     </bean>
-    <bean id="csvParser" class="otus.spring.albot.lesson1.util.QuizParser"/>
+    <bean id="csvParser" class="otus.spring.albot.lesson1.util.QuizParser">
+        <constructor-arg name="fileName" value="/quiz.csv"/>
+    </bean>
     <bean id="questionPreparer" class="otus.spring.albot.lesson1.util.QuestionsPreparer"/>
 
 </beans>

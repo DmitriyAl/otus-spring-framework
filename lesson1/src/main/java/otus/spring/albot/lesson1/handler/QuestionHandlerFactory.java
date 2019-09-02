@@ -1,5 +1,7 @@
 package otus.spring.albot.lesson1.handler;
 
+import org.apache.log4j.Logger;
+import otus.spring.albot.lesson1.exception.QuestionTypeIsNotSupportedException;
 import otus.spring.albot.lesson1.handler.ChoiceQH;
 import otus.spring.albot.lesson1.handler.CommonQH;
 import otus.spring.albot.lesson1.handler.MultipleChoiceQH;
@@ -15,17 +17,21 @@ public class QuestionHandlerFactory {
     private QuestionHandler multChoiceQH;
     private QuestionHandler trueFalseQH;
     private QuestionHandler commonQH;
+    private static final Logger LOG = Logger.getLogger(QuestionHandlerFactory.class);
 
-    public QuestionHandler getHandler(QuestionType type) {
+    public QuestionHandler getHandler(QuestionType type) throws QuestionTypeIsNotSupportedException {
         switch (type) {
             case C:
                 return getChoiceQH();
             case MC:
-                return getMultChoiceQH();
+                LOG.trace("The multi choice question type is not supported up for now");
+                throw new QuestionTypeIsNotSupportedException("The question type is not supported");
             case TF:
                 return getTrueFalseQH();
-            default:
+            case O:
                 return getCommonQH();
+            default:
+                throw new QuestionTypeIsNotSupportedException("The question type is not supported");
         }
     }
 

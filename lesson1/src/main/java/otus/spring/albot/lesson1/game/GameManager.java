@@ -1,5 +1,7 @@
 package otus.spring.albot.lesson1.game;
 
+import otus.spring.albot.lesson1.exception.IncorrectAnswerException;
+import otus.spring.albot.lesson1.exception.QuestionTypeIsNotSupportedException;
 import otus.spring.albot.lesson1.handler.QuestionHandler;
 import otus.spring.albot.lesson1.handler.QuestionHandlerFactory;
 import otus.spring.albot.lesson1.model.ParsedLine;
@@ -13,6 +15,7 @@ import java.util.Scanner;
 public class GameManager {
     private QuestionHandlerFactory factory;
     private Scanner scanner;
+    private String currentPlayer;
     private int counter;
     private int correctAnswers;
 
@@ -28,24 +31,45 @@ public class GameManager {
     }
 
     private void describeRules() {
-        System.out.println("hi");
+        System.out.println("Welcome to student quiz! Please enter your name");
+        currentPlayer = scanner.next();
+        System.out
+                .printf("Ok, %s, you have to answer on 5 questions. It could be the questions with a choice, " +
+                                "true/false questions or open questions. Good luck!\n",
+                        currentPlayer);
     }
 
     private void askQuestions(List<ParsedLine> questions) {
         for (ParsedLine question : questions) {
-            QuestionHandler handler = factory.getHandler(question.getType());
-            handler.askQuestion(++counter, question);
-            String answer = waitForAnswer();
-            handleAnswer(question, answer);
+            try {
+                QuestionHandler handler = factory.getHandler(question.getType());
+                counter++;
+                boolean handled;
+                do {
+                    handler.askQuestion(counter, question);
+                    String answer = waitForAnswer();
+                    handled = handleAnswer(question, answer);
+                } while (!handled);
+            } catch (QuestionTypeIsNotSupportedException e) {
+                break;
+            }
         }
     }
 
-    private void handleAnswer(ParsedLine question, String answer) {
+    private boolean handleAnswer(ParsedLine question, String answer) throws QuestionTypeIsNotSupportedException {
+        boolean handled = true;
         QuestionHandler handler = factory.getHandler(question.getType());
-        boolean correct = handler.handleQuestion(question, answer);
+        boolean correct = false;
+        try {
+            correct = handler.handleQuestion(question, answer);
+        } catch (IncorrectAnswerException e) {
+            System.out.println(e.getMessage());
+            handled = false;
+        }
         if (correct) {
             correctAnswers++;
         }
+        return handled;
     }
 
     private String waitForAnswer() {
@@ -53,6 +77,6 @@ public class GameManager {
     }
 
     private void showResults() {
-        System.out.printf("You correctly answered on %d from %d questions", correctAnswers, counter);
+        System.out.printf("%s, you correctly answered on %d from %d questions\n", currentPlayer, correctAnswers, counter);
     }
 }
