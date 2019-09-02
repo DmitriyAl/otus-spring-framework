@@ -18,6 +18,7 @@ public class GameManager {
     private String currentPlayer;
     private int counter;
     private int correctAnswers;
+    private int amount = 5;
 
     public GameManager(QuestionHandlerFactory factory) {
         this.factory = factory;
@@ -34,14 +35,15 @@ public class GameManager {
         System.out.println("Welcome to student quiz! Please enter your name");
         currentPlayer = scanner.next();
         System.out
-                .printf("Ok, %s, you have to answer on 5 questions. It could be the questions with a choice, " +
+                .printf("Ok, %s, you have to answer on %d questions. It could be the questions with a choice, " +
                                 "true/false questions or open questions. Good luck!\n",
-                        currentPlayer);
+                        currentPlayer, amount);
     }
 
     private void askQuestions(List<ParsedLine> questions) {
-        for (ParsedLine question : questions) {
+        for (int i = 0; i < amount && i < questions.size(); i++) {
             try {
+                ParsedLine question = questions.get(i);
                 QuestionHandler handler = factory.getHandler(question.getType());
                 counter++;
                 boolean handled;
@@ -51,7 +53,8 @@ public class GameManager {
                     handled = handleAnswer(question, answer);
                 } while (!handled);
             } catch (QuestionTypeIsNotSupportedException e) {
-                break;
+                System.out.println("oooooooooooooooooooops");
+                questions.remove(i--);
             }
         }
     }
@@ -77,6 +80,7 @@ public class GameManager {
     }
 
     private void showResults() {
-        System.out.printf("%s, you correctly answered on %d from %d questions\n", currentPlayer, correctAnswers, counter);
+        System.out
+                .printf("%s, you correctly answered on %d from %d questions\n", currentPlayer, correctAnswers, counter);
     }
 }

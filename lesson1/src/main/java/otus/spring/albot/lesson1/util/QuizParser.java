@@ -10,7 +10,6 @@ import otus.spring.albot.lesson1.model.QuestionType;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class QuizParser {
                 }
                 lines.add(line);
             } catch (ArrayIndexOutOfBoundsException ex) {
-                LOG.trace("Invalid CSV line with number " + record.getRecordNumber());
+                LOG.debug("Invalid CSV line with number " + record.getRecordNumber());
             }
         }
         return lines;

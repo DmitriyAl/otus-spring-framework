@@ -24,7 +24,7 @@ public class QuestionHandlerFactory {
             case C:
                 return getChoiceQH();
             case MC:
-                LOG.trace("The multi choice question type is not supported up for now");
+                LOG.debug("The multi choice question type is not supported up for now");
                 throw new QuestionTypeIsNotSupportedException("The question type is not supported");
             case TF:
                 return getTrueFalseQH();
